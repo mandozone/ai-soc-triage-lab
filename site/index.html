@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI-Assisted SOC Triage Lab — SSH Brute-Force Detection & MITRE ATT&CK Mapping</title>
+  <meta name="description" content="A hands-on SOC Tier 1 simulation: Splunk SPL detection for SSH brute-force, MITRE ATT&CK T1110 mapping, and AI-assisted triage with Python and Claude. Includes detection logic, kill-chain analysis, response playbook, and secure-development remediation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-row">
+      <div class="brand">
+        <span class="brand-mark">MANDOZONE</span>
+        <span class="brand-sep">/</span>
+        <span class="brand-name">AI-SOC-TRIAGE-LAB</span>
+      </div>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#overview">Overview</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#mitre">MITRE</a>
+        <a href="#detection">Detection</a>
+        <a href="#triage">AI Triage</a>
+        <a href="#response">Response</a>
+        <a href="#remediation">Remediation</a>
+        <a href="#skills">Skills</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <p class="eyebrow">Splunk · Python · MITRE ATT&CK® · Kali Linux · Claude AI</p>
+          <h1>AI-Assisted <span class="accent">SOC Triage Lab</span></h1>
+          <p class="lede">An end-to-end Tier 1 SOC simulation — detect an SSH brute-force attempt with Splunk SPL, map it to MITRE ATT&CK T1110, and run an AI-driven triage script that produces a structured analyst report with severity, false-positive scoring, and an escalation decision.</p>
+          <div class="tags">
+            <span class="tag">SSH Brute-Force Detection</span>
+            <span class="tag">Splunk SPL</span>
+            <span class="tag">Python Automation</span>
+            <span class="tag tag-accent">MITRE T1110 · T1110.001</span>
+            <span class="tag">Claude AI Triage</span>
+            <span class="tag tag-warn">Credential Access</span>
+          </div>
+          <div class="status-pill">
+            <span class="status-dot" aria-hidden="true"></span>
+            LAB COMPLETE — TIER 1 WORKFLOW VERIFIED
+          </div>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="reports/SOC_Triage_Lab_Final.pdf" target="_blank" rel="noopener">📄 View Full PDF Report</a>
+            <a class="btn btn-ghost" href="https://github.com/mandozone/ai-soc-triage-lab" target="_blank" rel="noopener">↗ GitHub Repository</a>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num">15</span><span class="stat-label">Failed logins / 60s</span></div>
+          <div class="stat"><span class="stat-num">T1110</span><span class="stat-label">ATT&CK Technique</span></div>
+          <div class="stat"><span class="stat-num">6</span><span class="stat-label">Workflow Stages</span></div>
+          <div class="stat"><span class="stat-num">15–25%</span><span class="stat-label">False-Positive Range</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="banner-image">
+      <div class="container">
+        <figure class="banner-figure">
+          <img src="assets/cover.png" alt="Cover page of the AI-Assisted SOC Triage Lab report — SSH Brute-Force Detection, MITRE ATT&CK Mapping, and AI-Powered Triage using Python, Splunk, MITRE ATT&CK, Kali Linux, and Claude AI." loading="eager" />
+          <figcaption>
+            Final lab report cover — <strong>AI-Assisted SOC Triage Lab: SSH Brute-Force Detection, MITRE ATT&CK Mapping, and AI-Powered Triage.</strong>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="overview" class="section">
+      <div class="container">
+        <p class="section-kicker">Overview</p>
+        <div class="two-col">
+          <div>
+            <h2>A realistic Tier 1 SOC investigation, end to end.</h2>
+            <p>This lab recreates a Security Operations Center analyst's full workflow against an SSH brute-force attempt: from log ingestion and SPL detection, through MITRE ATT&CK behavior mapping, AI-assisted triage, response planning, and secure-development remediation after a real API-key exposure incident.</p>
+            <p>The point isn't just to detect <em>"failed password"</em> events. It's to demonstrate the adversary-behavior reasoning that defines senior SOC work — every alert produced by this pipeline is tagged with its tactic, technique, sub-technique, and the kill-chain follow-on the analyst should watch for next.</p>
+          </div>
+          <aside class="card">
+            <p class="card-eyebrow">📁 Primary Deliverables</p>
+            <p class="card-title"><code>claude_triage_demo.py</code></p>
+            <p class="card-meta">Python + Claude AI Tier 1 triage script · MITRE-labeled Splunk SPL · sanitized auth logs · SOC investigation playbook.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow" class="section section-alt">
+      <div class="container">
+        <p class="section-kicker">End-to-End SOC Workflow</p>
+        <h2>Six stages — from raw <code>auth.log</code> to an audit-ready triage report.</h2>
+        <p class="prose">Each stage is mapped to a concrete tool and a MITRE alignment so the chain of custody from raw event to escalation decision is fully explicit.</p>
+
+        <pre class="pipeline-ascii" aria-label="ASCII pipeline diagram">
+   auth.log ─► Splunk SPL ─► MITRE Mapping ─► Python + Claude AI ─► Response ─► Remediation
+   (Kali)      (T1110 rule)   (T1110.001)      (Tier 1 analysis)    (Block/    (.gitignore,
+                                                                     Escalate)  key rotation)
+        </pre>
+
+        <div class="workflow-grid">
+          <article class="workflow-step">
+            <span class="step-num">STAGE 01 — LOG GENERATION</span>
+            <h3>Linux <code>auth.log</code> / SSH simulation</h3>
+            <p>Generate realistic SSH brute-force activity in a Kali Linux environment; collect raw authentication events into <code>sample_logs/</code>.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-num">STAGE 02 — DETECTION</span>
+            <h3>Splunk SPL — T1110 threshold trigger</h3>
+            <p>SPL query extracts source IPs from <code>Failed password</code> events, counts attempts, and fires when the rate exceeds the brute-force threshold.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-num">STAGE 03 — TRIAGE</span>
+            <h3>Python + Claude AI — T1110.001</h3>
+            <p><code>claude_triage_demo.py</code> classifies threat type, severity, false-positive probability, and produces a structured Tier 1 analyst report.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-num">STAGE 04 — INVESTIGATION</span>
+            <h3>Log review · IP reputation</h3>
+            <p>AbuseIPDB / VirusTotal / Shodan lookups on the source IP; cross-host correlation, targeted-account analysis, lateral-movement search.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-num">STAGE 05 — RESPONSE</span>
+            <h3>Firewall · escalation decision</h3>
+            <p>Block the source IP, document the alert, and escalate to Tier 2 if any of the five hard escalation criteria are met.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-num">STAGE 06 — REMEDIATION</span>
+            <h3>Git history reset · key rotation</h3>
+            <p>Real incident handled mid-project: API key flagged by a pre-push hook, repo history reset, credentials rotated, clean state force-pushed.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="mitre" class="section">
+      <div class="container">
+        <p class="section-kicker">MITRE ATT&CK® Mapping</p>
+        <h2>Surface-level detection becomes SOC-grade intelligence.</h2>
+        <p class="prose">Rather than just stating <em>"SSH brute-force detected,"</em> this project maps every observation to a tactic, technique, and sub-technique from the MITRE ATT&CK framework. The output of the detection rule is framework-aware and audit-ready.</p>
+
+        <div class="attack-card">
+          <h3>ATT&CK Framework Classification</h3>
+          <div class="attack-meta">
+            <div>
+              <p class="label">Tactic</p>
+              <p class="val">Credential Access</p>
+            </div>
+            <div>
+              <p class="label">Technique</p>
+              <p class="val">Brute Force — T1110</p>
+            </div>
+            <div>
+              <p class="label">Sub-Technique</p>
+              <p class="val">Password Guessing — T1110.001</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>Evidence Mapping — Observed Activity → MITRE Technique</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Observed Activity</th><th>MITRE Technique</th><th>ID</th><th>Confidence</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Repeated failed SSH login attempts</td><td>Brute Force</td><td><span class="mitre-badge">T1110</span></td><td><span class="severity-badge sev-high">HIGH</span></td></tr>
+              <tr><td>15 failures in a 60-second window</td><td>Password Guessing (automated)</td><td><span class="mitre-badge">T1110.001</span></td><td><span class="severity-badge sev-high">HIGH</span></td></tr>
+              <tr><td>Targeting port 22 (SSH service)</td><td>Credential Access via Remote Service</td><td><span class="mitre-badge">T1110</span></td><td><span class="severity-badge sev-high">HIGH</span></td></tr>
+              <tr><td>High-frequency pattern — non-human pacing</td><td>Automated tooling indicator</td><td><span class="mitre-badge">T1110.001</span></td><td><span class="severity-badge sev-med">MED-HIGH</span></td></tr>
+              <tr><td>Single source IP, multiple accounts</td><td>Credential Stuffing pattern</td><td><span class="mitre-badge">T1110.004</span></td><td><span class="severity-badge sev-med">MEDIUM</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top:36px;">Kill-Chain Thinking — What Comes Next?</h3>
+        <p class="prose">Most analysts stop at detection. Elite SOC thinking asks: if this attack succeeds, what does the adversary do next? Each successor technique below has an explicit indicator to watch for.</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>If Brute Force Succeeds…</th><th>Follow-On Technique</th><th>MITRE ID</th><th>What to Watch For</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Attacker gains valid credentials</td><td>Valid Accounts</td><td><span class="mitre-badge">T1078</span></td><td>Successful login from a previously failing IP</td></tr>
+              <tr><td>Attacker establishes interactive session</td><td>Remote Services — SSH</td><td><span class="mitre-badge">T1021.004</span></td><td>New SSH session from the attack source IP</td></tr>
+              <tr><td>Attacker runs commands on system</td><td>Command &amp; Scripting Interpreter</td><td><span class="mitre-badge">T1059</span></td><td>Unusual commands in shell history / logs</td></tr>
+              <tr><td>Attacker explores the network</td><td>Network Service Discovery</td><td><span class="mitre-badge">T1046</span></td><td>Port scans from the compromised host</td></tr>
+              <tr><td>Attacker maintains long-term access</td><td>Create Account / Backdoor</td><td><span class="mitre-badge">T1136</span></td><td>New user accounts or SSH key additions</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="detection" class="section section-alt">
+      <div class="container">
+        <p class="section-kicker">Detection Logic — Splunk Integration</p>
+        <h2>SPL that fires framework-aware alerts.</h2>
+        <p class="prose">Splunk runs inside the Kali Linux lab as the primary detection engine. The advanced query labels every alert with its MITRE technique, sub-technique, and tactic — and assigns dynamic severity based on attempt volume — so the analyst is briefed on adversary behavior the moment the alert fires.</p>
+
+        <div class="config-grid">
+          <article class="config-card">
+            <h3>Standard Detection Query</h3>
+            <p>Baseline brute-force trigger — counts failed SSH passwords per source IP and fires above the threshold.</p>
+<pre><code>index=linux_logs sourcetype=auth_log "Failed password"
+| stats count by src_ip
+| where count &gt; 10</code></pre>
+          </article>
+
+          <article class="config-card">
+            <h3>MITRE-Labeled Detection Query 🔥</h3>
+            <p>Upgraded SPL: extracts the source IP, scores severity dynamically, and tags every alert with its MITRE tactic, technique, and sub-technique.</p>
+<pre><code>index=linux_logs sourcetype=auth_log "Failed password"
+| rex "from (?&lt;src_ip&gt;\d+\.\d+\.\d+\.\d+)"
+| stats count by src_ip
+| where count &gt; 10
+| eval mitre_technique="T1110 - Brute Force"
+| eval mitre_subtechnique="T1110.001 - Password Guessing"
+| eval mitre_tactic="Credential Access"
+| eval severity=case(count&gt;50,"HIGH",
+                     count&gt;20,"MEDIUM",
+                     true(),"LOW")
+| table src_ip, count, severity,
+        mitre_tactic, mitre_technique, mitre_subtechnique</code></pre>
+          </article>
+        </div>
+
+        <blockquote class="takeaway">
+          <p class="takeaway-title">Why this matters</p>
+          <p>Every alert produced by this query is automatically tagged with its adversary-behavior context. When it fires in production, the analyst immediately knows the tactic, the technique, the sub-technique, and the recommended response — no manual lookup, no framework guesswork.</p>
+        </blockquote>
+      </div>
+    </section>
+
+    <section id="triage" class="section">
+      <div class="container">
+        <p class="section-kicker">Automated SOC Triage — Python + Claude AI</p>
+        <h2><code>claude_triage_demo.py</code> — a Tier 1 analyst in a script.</h2>
+        <p class="prose">A custom Python script analyzes authentication activity and emits a structured Tier 1 investigation report. The format mirrors how analysts document alerts in a real SOC: threat classification, severity assessment, key evidence, false-positive probability, recommended response, and escalation criteria.</p>
+
+        <h3 style="margin-top:28px;">Triage Output Summary</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Analysis Category</th><th>Result</th><th>Basis</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Threat Type</strong></td><td>SSH Brute-Force / Credential Stuffing</td><td><span class="mitre-badge">T1110.001</span></td></tr>
+              <tr><td><strong>Severity</strong></td><td><span class="severity-badge sev-med">MEDIUM</span> → <span class="severity-badge sev-high">HIGH</span></td><td>External source, no confirmed successful login</td></tr>
+              <tr><td><strong>Key Evidence</strong></td><td>15 failed attempts in 60 seconds on port 22</td><td>Exceeds human-error threshold</td></tr>
+              <tr><td><strong>False-Positive Probability</strong></td><td><span class="severity-badge sev-low">LOW · 15–25%</span></td><td>Frequency rules out user error</td></tr>
+              <tr><td><strong>Recommended Response</strong></td><td>Block IP · review logs · escalate if login confirmed</td><td>See Response &amp; Escalation</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top:32px;">Adversary Objective &amp; Intent</h3>
+        <div class="evidence-grid">
+          <article class="evidence-card">
+            <span class="ev-tag">🧠 PRIMARY GOAL</span>
+            <p>Gain unauthorized access to a remote system via valid SSH credentials.</p>
+          </article>
+          <article class="evidence-card">
+            <span class="ev-tag">METHOD</span>
+            <p>Systematically attempt large volumes of username/password combinations against SSH.</p>
+          </article>
+          <article class="evidence-card">
+            <span class="ev-tag">TARGET VALUE</span>
+            <p>SSH access provides direct shell — the highest-value credential an attacker can obtain.</p>
+          </article>
+          <article class="evidence-card">
+            <span class="ev-tag">RISK IF SUCCESSFUL</span>
+            <p>Full system control, lateral movement, data exfiltration, or ransomware deployment.</p>
+          </article>
+        </div>
+
+        <h3 style="margin-top:32px;">Triage Script Output — Evidence</h3>
+        <div class="triage-figures">
+          <figure>
+            <img src="assets/triage-output-1.png" alt="claude_triage_demo.py execution showing SOC Tier 1 analysis: threat classification SSH Brute-Force / Credential Stuffing, severity MEDIUM to HIGH, key evidence of 15 failed attempts in 60 seconds on port 22, and false positive evaluation beginning." loading="lazy" />
+            <figcaption>Figure 1 — Tier 1 triage output: threat type, severity, and key evidence (15 failed attempts in 60 s on port 22).</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/triage-output-2.png" alt="Continuation of triage output showing false positive probability LOW 15 to 25 percent, recommended immediate actions including IP reputation lookups via AbuseIPDB, VirusTotal, and Shodan, secondary actions for firewall review and lateral movement search, and Tier 2 escalation criteria." loading="lazy" />
+            <figcaption>Figure 2 — Response plan: false-positive scoring, immediate actions, secondary actions, and Tier 2 escalation criteria.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="response" class="section section-alt">
+      <div class="container">
+        <p class="section-kicker">Response Planning &amp; Escalation</p>
+        <h2>Block, verify, and escalate — on hard criteria, not vibes.</h2>
+
+        <div class="response-grid">
+          <div class="response-block">
+            <h3>Immediate Actions</h3>
+            <ol>
+              <li><strong>Check if the attack is ongoing</strong> — query the last 5–10 minutes of auth logs for this source IP.</li>
+              <li><strong>Verify successful logins</strong> — did <code>192.0.2.45</code> achieve any successful authentication?</li>
+              <li><strong>IP reputation check</strong> — AbuseIPDB, VirusTotal, Shodan for <code>192.0.2.45</code>.</li>
+              <li><strong>Identify targeted accounts</strong> — root or admin targeted = immediate escalation.</li>
+            </ol>
+          </div>
+          <div class="response-block">
+            <h3>Secondary Actions</h3>
+            <ol>
+              <li><strong>Firewall / IPS review</strong> — confirm the source IP is now blocked.</li>
+              <li><strong>Asset criticality</strong> — determine the value of <code>192.0.2.10</code>; critical asset = immediate escalation.</li>
+              <li><strong>Lateral movement check</strong> — if any login succeeded, hunt subsequent activity from that session.</li>
+              <li><strong>Cross-host correlation</strong> — is the same IP attacking other internal hosts?</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="escalate-card">
+          <h3>Escalate to Tier 2 immediately if ANY of these are true</h3>
+          <ul class="escalate-list">
+            <li>Successful login detected from <code>192.0.2.45</code> (before or after the failures)</li>
+            <li>Target host <code>192.0.2.10</code> is classified as critical infrastructure</li>
+            <li>Attack is ongoing or has resumed after a temporary pause</li>
+            <li>Source IP correlates to a known threat actor in threat-intel feeds</li>
+            <li>Multiple internal hosts are being targeted simultaneously</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="remediation" class="section">
+      <div class="container">
+        <p class="section-kicker">Incident Handling — Secure Repository Remediation</p>
+        <h2>Real incident, mid-project — handled like a security engineer.</h2>
+        <p class="prose">During development, a Git pre-push hook detected an API-key pattern in commit history and blocked the push. The full remediation process below is exactly how credential exposure gets handled in production: contain, scrub, rotate, document.</p>
+
+        <div class="engineer-grid">
+          <div class="engineer-card">
+            <p class="section-kicker">Remediation Sequence</p>
+            <h2>Six-step credential-exposure response.</h2>
+            <ul class="bullets">
+              <li>Identify the exposure — pre-push hook flagged API-key pattern in staged history</li>
+              <li>Remove Git history — full reset to eliminate exposed credentials from all commits</li>
+              <li>Reinitialize — repository rebuilt from a clean state with a sanitized initial commit</li>
+              <li>Reconfigure remote — origin reconnected to GitHub</li>
+              <li>Force push clean state — <code>git push --force-with-lease</code> to overwrite poisoned history</li>
+              <li>Rotate credentials — API key revoked and reissued; new key stored only in <code>.env</code> (gitignored)</li>
+            </ul>
+          </div>
+          <figure class="engineer-figure">
+            <img src="assets/git-setup.png" alt="Screenshot from the lab report showing git clone, project directory creation, and configuration file setup including .gitignore, .env.example, and requirements.txt." loading="lazy" />
+            <figcaption>Figure 3 — Project setup: <code>git clone</code>, directory scaffolding, and configuration files for secure development.</figcaption>
+          </figure>
+        </div>
+
+        <div class="config-grid" style="margin-top:32px;">
+          <article class="config-card">
+            <h3>Full Remediation Sequence</h3>
+            <p>Exact commands used to scrub the repo, restart from a clean state, and force-push without nuking peer work.</p>
+<pre><code># Confirm exposed commit
+git log --oneline
+
+# Remove all history
+rm -rf .git
+
+# Reinitialize clean
+git init
+
+# Stage sanitized files only (.env excluded by .gitignore)
+git add .
+git commit -m "Initial clean commit — credentials removed"
+
+# Reconnect remote and force-push safely
+git remote add origin \
+  https://github.com/mandozone/claude-splunk-soc-assistant.git
+git push --force-with-lease origin main</code></pre>
+          </article>
+
+          <article class="config-card">
+            <h3>Secure-Development Controls</h3>
+            <p>Version-control hygiene is treated as a security control, not just a developer convenience.</p>
+            <div class="table-wrap" style="border-radius:8px; margin-top:14px;">
+              <table class="data-table">
+                <tbody>
+                  <tr><td><code>.gitignore</code></td><td>Blocks <code>.env</code>, <code>__pycache__</code>, <code>*.pyc</code> from VCS</td></tr>
+                  <tr><td><code>.env.example</code></td><td>Template showing required vars without real values</td></tr>
+                  <tr><td><code>requirements.txt</code></td><td>Pinned dependency versions — reproducible builds</td></tr>
+                  <tr><td>Virtual Environment</td><td>Isolated from system Python — no cross-project contamination</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <figure class="banner-figure" style="margin-top:32px;">
+          <img src="assets/pip-install.png" alt="pip install screenshot confirming anthropic 0.97.0, python-dotenv 1.2.2, and requests 2.33.1 were installed successfully into the project's isolated virtual environment." loading="lazy" />
+          <figcaption>Figure 4 — Dependencies installed into the isolated virtualenv: <code>anthropic 0.97.0</code>, <code>python-dotenv 1.2.2</code>, <code>requests 2.33.1</code>.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="skills" class="section section-alt">
+      <div class="container">
+        <p class="section-kicker">Skills Demonstrated</p>
+        <h2>What this lab proves.</h2>
+        <div class="skills-grid">
+          <div class="skill-tile">
+            <h3>SIEM Detection Engineering</h3>
+            <p>Splunk SPL with MITRE-tagged output and dynamic severity scoring.</p>
+          </div>
+          <div class="skill-tile">
+            <h3>MITRE ATT&CK Mapping</h3>
+            <p>Tactic / technique / sub-technique mapping tied to real observed evidence.</p>
+          </div>
+          <div class="skill-tile">
+            <h3>Python Security Automation</h3>
+            <p>AI-assisted SOC triage script producing structured Tier 1 output.</p>
+          </div>
+          <div class="skill-tile">
+            <h3>Threat Intelligence</h3>
+            <p>Kill-chain thinking — detecting T1110, pre-positioned for T1078 &amp; T1021.</p>
+          </div>
+          <div class="skill-tile">
+            <h3>Incident Response</h3>
+            <p>False-positive analysis, escalation criteria, response-playbook execution.</p>
+          </div>
+          <div class="skill-tile">
+            <h3>Secure Development</h3>
+            <p>Env-var management, <code>.gitignore</code> hygiene, credential rotation.</p>
+          </div>
+          <div class="skill-tile">
+            <h3>Incident Handling</h3>
+            <p>Real-world API-key exposure remediated via Git security controls.</p>
+          </div>
+          <div class="skill-tile">
+            <h3>SOC Reporting Style</h3>
+            <p>Framework-aligned write-ups that read like field-grade analyst notes.</p>
+          </div>
+        </div>
+
+        <blockquote class="takeaway">
+          <p class="takeaway-title">Final statement — written the way a SOC writes it</p>
+          <p>This activity is consistent with MITRE ATT&CK technique <strong>T1110 (Brute Force)</strong>, sub-technique <strong>T1110.001 (Password Guessing)</strong>, commonly observed during early-stage Credential Access attempts in intrusion scenarios. MITRE ATT&CK mapping was used to standardize detection logic and align findings with industry-recognized adversary behaviors.</p>
+          <p>That sentence alone signals: this is how someone already working in a SOC thinks.</p>
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="section-kicker">Disclaimer</p>
+        <p class="prose">This project was conducted in a controlled lab environment for educational and defensive security purposes only. All indicators and IP addresses were sanitized.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <div>
+        <p class="brand-mark">MANDOZONE / AI-SOC-TRIAGE-LAB</p>
+        <p class="footer-meta">Splunk · Python · MITRE ATT&CK® · Kali Linux · Claude AI</p>
+      </div>
+      <div class="footer-credit">
+        <p>SOC Tier 1 workflow designed and executed end-to-end by <strong>mandozone</strong>.</p>
+        <p class="footer-meta">© <span id="year"></span> — Lab documentation site.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
