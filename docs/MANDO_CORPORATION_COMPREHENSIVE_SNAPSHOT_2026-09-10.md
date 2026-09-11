@@ -1,6 +1,7 @@
 # Mando Corporation — Comprehensive Operating Snapshot
 
 **Snapshot date:** 2026-09-10  
+**Latest operating update:** 2026-09-11  
 **Repository:** `mandozone/ai-soc-triage-lab`  
 **Website branch:** `mando-corporation-site`  
 **Website:** `mandocorporation.com`
@@ -502,6 +503,8 @@ Current pricing displayed on the website includes:
 
 Historical Mando pricing also included a later monthly target of **$2,000/month** for some local proposals. Pricing should always be matched to the current campaign model and verified underlying media economics before quoting.
 
+**Pricing status note (2026-09-11):** the website figures above are legacy display examples and are not the authoritative Hulu / Disney+ streaming or billboard-plus-streaming package prices. The active package prices are locked in Section 13. The public website was not changed by this snapshot-only update.
+
 ---
 
 ## 12. Inventory / Geography Rules
@@ -554,6 +557,26 @@ Do not reuse Fairfield-type 3,000+ play figures for Newark inventory.
 ---
 
 ## 13. Campaign Economics
+
+### Authoritative package pricing — locked 2026-09-11
+
+The following prices are the current active Mando prices for Hulu / Disney+ streaming and coordinated billboard-plus-streaming campaigns:
+
+- **Streaming Pilot — $1,500/month**
+  - Planning media allowance: approximately **$500**
+  - Planning gross margin: approximately **$1,000** before production, labor, taxes, and operating expenses
+- **Streaming Growth — $2,500/month**
+  - Planning media allowance: approximately **$1,000**
+  - Planning gross margin: approximately **$1,500** before production, labor, taxes, and operating expenses
+- **Billboard + Streaming — $4,000/month**
+  - Planning underlying media cost: approximately **$1,040** when using the historical Newark board reference of about $18/day plus a $500 streaming campaign
+  - Planning gross margin: approximately **$2,960** before production, labor, taxes, and operating expenses
+- **Video production — $500–$750 one-time when needed**
+  - Charge separately when the client does not already have an approved 15–30 second video creative
+
+These prices supersede conflicting older package prices for these specific streaming and hybrid offers. Do not change them without a newer explicit instruction from the user.
+
+The streaming media figures are planning allowances, not guaranteed final costs. Before sale or launch, confirm the selected platform, geography, dates, targeting, inventory, forecast, creative requirements, and actual media cost. Approved external language remains: **“Hulu, Disney+, and other premium streaming inventory, subject to platform availability and approval.”**
 
 Before quoting any client:
 
@@ -857,6 +880,7 @@ Historical snapshots should be preserved as evidence and context, but current se
 - international outreach uses `sales@mandocorporation.com`
 - local U.S. niche outreach uses `mandocorporation5@gmail.com`
 - international campaigns are positioned as U.S. market-entry media opportunities, often combining digital billboards + Hulu / Disney+
+- active package pricing is $1,500/month Streaming Pilot, $2,500/month Streaming Growth, and $4,000/month Billboard + Streaming; video production is $500–$750 one-time when needed
 - recipient verification must come from first-party sources before sending
 - sender identity must be explicitly checked before each send
 - deliverability health takes priority over raw outreach volume
